@@ -1,0 +1,11 @@
+{
+  "name": "ballroom-partnership-graph",
+  "version": "1.0.0",
+  "description": "Ballroom Partnership Graph Visualization",
+  "scripts": {
+    "build": "tsc --project docs/tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

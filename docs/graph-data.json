@@ -1,0 +1,24 @@
+{
+  "relationships": [
+    {
+      "nodeA": "Don",
+      "relationship": "standard",
+      "nodeB": "Vikie"
+    },
+    {
+      "nodeA": "Don",
+      "relationship": "latin",
+      "nodeB": "Keeley"
+    },
+    {
+      "nodeA": "Don",
+      "relationship": "smooth",
+      "nodeB": "Athena"
+    },
+    {
+      "nodeA": "Vikie",
+      "relationship": "smooth",
+      "nodeB": "Tim"
+    }
+  ]
+}
