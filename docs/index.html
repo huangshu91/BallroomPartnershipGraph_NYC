@@ -19,6 +19,13 @@
       height: 100vh;
       display: block;
     }
+    
+    /* Scale down legend on mobile */
+    @media (max-width: 768px) {
+      #d3-graph .legend {
+        transform-origin: left bottom;
+      }
+    }
   </style>
 </head>
 <body>

@@ -173,43 +173,51 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
  circles.call(drag);
  
  // Draw legend (outside container so it doesn't zoom)
-  const legendData = [
-    { color: "yellow", type: "standard" },
-    { color: "blue", type: "latin" },
-    { color: "green", type: "smooth" },
-    { color: "red", type: "rhythm" }
-  ];
+ const legendData = [
+   { color: "yellow", type: "standard" },
+   { color: "blue", type: "latin" },
+   { color: "green", type: "smooth" },
+   { color: "red", type: "rhythm" }
+ ];
 
-  const legendX = 40;
-  const legendY = height - 200;
-  const legendSpacing = 45;
+ // Responsive legend sizing
+ const isMobile = width < 768;
+ const legendScale = isMobile ? 0.5 : 1;
+ const legendX = isMobile ? 15 : 40;
+ const legendY = height - (isMobile ? 100 : 200);
+ const legendSpacing = isMobile ? 22 : 45;
+ const lineLength = isMobile ? 30 : 60;
+ const textOffset = isMobile ? 35 : 70;
+ const fontSize = isMobile ? 11 : 22;
+ const strokeWidth = isMobile ? 3 : 6;
+ const textStrokeWidth = isMobile ? 1.5 : 3;
 
-  const legend = svg.append("g")
-    .attr("class", "legend")
-    .attr("transform", `translate(${legendX},${legendY})`);
+ const legend = svg.append("g")
+   .attr("class", "legend")
+   .attr("transform", `translate(${legendX},${legendY})`);
 
-  legend.selectAll("line")
-    .data(legendData)
-    .join("line")
-    .attr("x1", 0)
-    .attr("y1", (_: any, i: number) => i * legendSpacing)
-    .attr("x2", 60)
-    .attr("y2", (_: any, i: number) => i * legendSpacing)
-    .attr("stroke", (d: any) => d.color)
-    .attr("stroke-width", 6);
+ legend.selectAll("line")
+   .data(legendData)
+   .join("line")
+   .attr("x1", 0)
+   .attr("y1", (_: any, i: number) => i * legendSpacing)
+   .attr("x2", lineLength)
+   .attr("y2", (_: any, i: number) => i * legendSpacing)
+   .attr("stroke", (d: any) => d.color)
+   .attr("stroke-width", strokeWidth);
 
-  legend.selectAll("text")
-    .data(legendData)
-    .join("text")
-    .attr("x", 70)
-    .attr("y", (_: any, i: number) => i * legendSpacing + 6)
-    .attr("font-size", "22px")
-    .attr("font-weight", "bold")
-    .attr("fill", "white")
-    .attr("stroke", "#000")
-    .attr("stroke-width", 3)
-    .attr("paint-order", "stroke")
-    .text((d: any) => d.type.charAt(0).toUpperCase() + d.type.slice(1));
+ legend.selectAll("text")
+   .data(legendData)
+   .join("text")
+   .attr("x", textOffset)
+   .attr("y", (_: any, i: number) => i * legendSpacing + (fontSize / 3))
+   .attr("font-size", `${fontSize}px`)
+   .attr("font-weight", "bold")
+   .attr("fill", "white")
+   .attr("stroke", "#000")
+   .attr("stroke-width", textStrokeWidth)
+   .attr("paint-order", "stroke")
+   .text((d: any) => d.type.charAt(0).toUpperCase() + d.type.slice(1));
 }
 
 // Load graph data and initialize
