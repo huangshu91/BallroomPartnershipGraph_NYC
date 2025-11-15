@@ -52,10 +52,20 @@ function drawGraphWithNodesAndEdges(data) {
         .force("charge", d3.forceManyBody().strength(-1000))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force("collision", d3.forceCollide().radius(60));
+    // Create a container group for zoom/pan
+    const container = svg.append("g").attr("class", "container");
     // Create separate groups for different element types
-    const edgeGroup = svg.append("g").attr("class", "edges");
-    const nodeGroup = svg.append("g").attr("class", "nodes");
-    const labelGroup = svg.append("g").attr("class", "labels");
+    const edgeGroup = container.append("g").attr("class", "edges");
+    const nodeGroup = container.append("g").attr("class", "nodes");
+    const labelGroup = container.append("g").attr("class", "labels");
+    // Add zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([0.1, 10]) // Allow zoom from 10% to 1000%
+        .on("zoom", (event) => {
+        container.attr("transform", event.transform);
+    });
+    // Apply zoom to SVG
+    svg.call(zoom);
     // Draw edges (lines) - must be drawn before simulation starts
     const lines = edgeGroup.selectAll("line")
         .data(edges)
@@ -125,7 +135,7 @@ function drawGraphWithNodesAndEdges(data) {
     });
     // Apply drag behavior to circles
     circles.call(drag);
-    // Draw legend
+    // Draw legend (outside container so it doesn't zoom)
     const legendData = [
         { color: "yellow", type: "standard" },
         { color: "blue", type: "latin" },
