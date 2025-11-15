@@ -19,6 +19,26 @@
       "nodeA": "Vikie",
       "relationship": "smooth",
       "nodeB": "Tim"
+    },
+    {
+      "nodeA": "Tim",
+      "relationship": "latin",
+      "nodeB": "Evelynne"
+    },
+    {
+      "nodeA": "Evelynne",
+      "relationship": "standard",
+      "nodeB": "Jonny"
+    },
+    {
+      "nodeA": "Jonny",
+      "relationship": "standard",
+      "nodeB": "Dorothy"
+    },
+    {
+      "nodeA": "Pat",
+      "relationship": "standard",
+      "nodeB": "Ying"
     }
   ]
 }
