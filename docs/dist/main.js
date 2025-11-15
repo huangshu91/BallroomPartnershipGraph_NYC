@@ -48,12 +48,12 @@ function drawGraphWithNodesAndEdges(data) {
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(edges)
         .id((d) => d.id)
-        .distance(150))
-        .force("charge", d3.forceManyBody().strength(-500))
+        .distance(180))
+        .force("charge", d3.forceManyBody().strength(-600))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force("collision", d3.forceCollide().radius(60))
-        .force("x", d3.forceX(width / 2).strength(0.05))
-        .force("y", d3.forceY(height / 2).strength(0.05));
+        .force("x", d3.forceX(width / 2).strength(0.03))
+        .force("y", d3.forceY(height / 2).strength(0.03));
     // Create a container group for zoom/pan
     const container = svg.append("g").attr("class", "container");
     // Create separate groups for different element types
