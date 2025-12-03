@@ -68,16 +68,18 @@ function drawGraphWithNodesAndEdges(data) {
             });
         }
     });
-    // Create force simulation
+    // Create force simulation with stronger forces to prevent overlap
     const simulation = d3.forceSimulation(nodes)
         .force("link", d3.forceLink(edges)
         .id((d) => d.id)
-        .distance(180))
-        .force("charge", d3.forceManyBody().strength(-600))
+        .distance(250) // Increased from 180 for more spacing
+        .strength(0.5)) // Added link strength
+        .force("charge", d3.forceManyBody().strength(-1200)) // Increased repulsion from -600
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide().radius(60))
-        .force("x", d3.forceX(width / 2).strength(0.03))
-        .force("y", d3.forceY(height / 2).strength(0.03));
+        .force("collision", d3.forceCollide().radius(70).strength(1)) // Increased collision radius and strength
+        .force("x", d3.forceX(width / 2).strength(0.05)) // Slightly stronger centering
+        .force("y", d3.forceY(height / 2).strength(0.05))
+        .alphaDecay(0.02); // Slower cooling for better settling
     // Create a container group for zoom/pan
     const container = svg.append("g").attr("class", "container");
     // Create separate groups for different element types
