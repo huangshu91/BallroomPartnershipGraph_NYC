@@ -20,16 +20,101 @@
       display: block;
     }
     
+    /* Legend window styling */
+    .legend-window {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #69b3a2;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .legend-window.collapsed {
+      padding: 8px 12px;
+    }
+    
+    .legend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .legend-window.collapsed .legend-header {
+      margin-bottom: 0;
+    }
+    
+    .legend-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    .legend-toggle {
+      color: #69b3a2;
+      font-size: 20px;
+      font-weight: bold;
+      margin-left: 15px;
+      transition: transform 0.3s ease;
+    }
+    
+    .legend-window.collapsed .legend-toggle {
+      transform: rotate(180deg);
+    }
+    
+    .legend-content {
+      max-height: 300px;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
+    }
+    
+    .legend-window.collapsed .legend-content {
+      max-height: 0;
+      opacity: 0;
+    }
+    
     /* Scale down legend on mobile */
     @media (max-width: 768px) {
-      #d3-graph .legend {
-        transform-origin: left bottom;
+      .legend-window {
+        bottom: 10px;
+        left: 10px;
+        padding: 10px;
+      }
+      
+      .legend-title {
+        font-size: 12px;
+      }
+      
+      .legend-toggle {
+        font-size: 16px;
+        margin-left: 8px;
       }
     }
   </style>
 </head>
 <body>
   <svg id="d3-graph"></svg>
+  
+  <!-- Legend Window -->
+  <div class="legend-window" id="legend-window">
+    <div class="legend-header" id="legend-header">
+      <h3 class="legend-title">Legend</h3>
+      <span class="legend-toggle">▼</span>
+    </div>
+    <div class="legend-content" id="legend-content">
+      <svg id="legend-svg" width="200" height="180"></svg>
+    </div>
+  </div>
+  
   <!-- D3.js local -->
   <script src="d3.min.js"></script>
   <script src="dist/main.js?v=7"></script>

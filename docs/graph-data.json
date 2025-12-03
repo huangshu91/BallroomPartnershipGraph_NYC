@@ -2,11 +2,6 @@
   "relationships": [
     {
       "nodeA": "Don",
-      "relationship": "standard",
-      "nodeB": "Vikie"
-    },
-    {
-      "nodeA": "Don",
       "relationship": "latin",
       "nodeB": "Keeley"
     },
@@ -39,6 +34,51 @@
       "nodeA": "Pat",
       "relationship": "standard",
       "nodeB": "Ying"
+    },
+    {
+      "nodeA": "KevinLu",
+      "relationship": "standard",
+      "nodeB": "Shannon"
+    },
+    {
+      "nodeA": "Saad",
+      "relationship": "standard",
+      "nodeB": "Annie"
+    },
+    {
+      "nodeA": "Matthew",
+      "relationship": "standard",
+      "nodeB": "Alicia"
+    },
+    {
+      "nodeA": "KevinSong",
+      "relationship": "standard",
+      "nodeB": "Anna"
+    },
+    {
+      "nodeA": "Liam",
+      "relationship": "standard",
+      "nodeB": "Charlotte"
+    },
+    {
+      "nodeA": "Jeffrey",
+      "relationship": "standard",
+      "nodeB": "Marie"
+    },
+    {
+      "nodeA": "Jeffrey",
+      "relationship": "smooth",
+      "nodeB": "Marie"
+    },
+    {
+      "nodeA": "Leonard",
+      "relationship": "smooth",
+      "nodeB": "Stephanie"
+    },
+    {
+      "nodeA": "Leonard",
+      "relationship": "standard",
+      "nodeB": "Stephanie"
     }
   ]
 }

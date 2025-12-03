@@ -11,10 +11,11 @@ interface GraphNode {
 }
 
 interface GraphEdge {
- source: string;
- target: string;
- color: string;
- type: string;
+  source: string;
+  target: string;
+  color: string;
+  type: string;
+  curveOffset?: number;
 }
 
 interface Relationship {
@@ -61,13 +62,38 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
    y: height / 2 + (Math.random() - 0.5) * 200
  }));
 
- // Create edges from relationships
- const edges: GraphEdge[] = data.relationships.map(rel => ({
-   source: rel.nodeA,
-   target: rel.nodeB,
-   color: relationshipColors[rel.relationship.toLowerCase()] || "gray",
-   type: rel.relationship.toLowerCase()
- }));
+ // Create edges from relationships with curve offsets for multiple edges
+ const edgeMap = new Map<string, GraphEdge[]>();
+ 
+ data.relationships.forEach(rel => {
+   const key = [rel.nodeA, rel.nodeB].sort().join('-');
+   if (!edgeMap.has(key)) {
+     edgeMap.set(key, []);
+   }
+   edgeMap.get(key)!.push({
+     source: rel.nodeA,
+     target: rel.nodeB,
+     color: relationshipColors[rel.relationship.toLowerCase()] || "gray",
+     type: rel.relationship.toLowerCase()
+   });
+ });
+ 
+ // Assign curve offsets to edges with multiple relationships
+ const edges: GraphEdge[] = [];
+ edgeMap.forEach((edgeList) => {
+   if (edgeList.length === 1) {
+     edgeList[0].curveOffset = 0;
+     edges.push(edgeList[0]);
+   } else {
+     // Multiple edges between same nodes - apply curve offsets
+     const offsetStep = 40;
+     const startOffset = -((edgeList.length - 1) * offsetStep) / 2;
+     edgeList.forEach((edge, i) => {
+       edge.curveOffset = startOffset + (i * offsetStep);
+       edges.push(edge);
+     });
+   }
+ });
 
  // Create force simulation
  const simulation = d3.forceSimulation(nodes)
@@ -98,12 +124,13 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
  // Apply zoom to SVG
  svg.call(zoom);
 
- // Draw edges (lines) - must be drawn before simulation starts
- const lines = edgeGroup.selectAll("line")
+ // Draw edges (paths for curved lines) - must be drawn before simulation starts
+ const lines = edgeGroup.selectAll("path")
    .data(edges)
-   .join("line")
+   .join("path")
    .attr("stroke", (d: GraphEdge) => d.color)
-   .attr("stroke-width", 6);
+   .attr("stroke-width", 6)
+   .attr("fill", "none");
 
  // Draw nodes (circles)
  const circles = nodeGroup.selectAll("circle")
@@ -134,11 +161,32 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
 
  // Function to update positions
  function updatePositions() {
-   lines
-     .attr("x1", (d: any) => d.source.x)
-     .attr("y1", (d: any) => d.source.y)
-     .attr("x2", (d: any) => d.target.x)
-     .attr("y2", (d: any) => d.target.y);
+   lines.attr("d", (d: any) => {
+     const sourceX = d.source.x;
+     const sourceY = d.source.y;
+     const targetX = d.target.x;
+     const targetY = d.target.y;
+     
+     if (d.curveOffset === 0) {
+       // Straight line for single edges
+       return `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
+     } else {
+       // Curved line for multiple edges
+       const dx = targetX - sourceX;
+       const dy = targetY - sourceY;
+       const dr = Math.sqrt(dx * dx + dy * dy);
+       
+       // Calculate perpendicular offset
+       const offsetX = -dy / dr * d.curveOffset;
+       const offsetY = dx / dr * d.curveOffset;
+       
+       // Control point for quadratic curve
+       const cx = (sourceX + targetX) / 2 + offsetX;
+       const cy = (sourceY + targetY) / 2 + offsetY;
+       
+       return `M ${sourceX},${sourceY} Q ${cx},${cy} ${targetX},${targetY}`;
+     }
+   });
    
    circles
      .attr("cx", (d: GraphNode) => d.x)
