@@ -92,6 +92,13 @@ function drawGraphWithNodesAndEdges(data) {
     });
     // Apply zoom to SVG
     svg.call(zoom);
+    // Set initial zoom to fit all nodes
+    const initialScale = 0.6; // Start at 60% zoom to show more nodes
+    const initialTransform = d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(initialScale)
+        .translate(-width / 2, -height / 2);
+    svg.call(zoom.transform, initialTransform);
     // Draw edges (paths for curved lines) - must be drawn before simulation starts
     const lines = edgeGroup.selectAll("path")
         .data(edges)
