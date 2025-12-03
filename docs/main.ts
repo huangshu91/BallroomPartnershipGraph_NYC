@@ -221,30 +221,33 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
 
  // Apply drag behavior to circles
  circles.call(drag);
+}
+
+// Draw legend in the HTML legend window
+function drawLegend() {
+ const legendSvg = d3.select("#legend-svg");
+ legendSvg.selectAll("*").remove();
  
- // Draw legend (outside container so it doesn't zoom)
  const legendData = [
-   { color: "yellow", type: "standard" },
-   { color: "blue", type: "latin" },
-   { color: "green", type: "smooth" },
-   { color: "red", type: "rhythm" }
+   { color: "yellow", type: "Standard" },
+   { color: "red", type: "Latin" },
+   { color: "green", type: "Smooth" },
+   { color: "blue", type: "Rhythm" }
  ];
 
- // Responsive legend sizing
- const isMobile = width < 768;
- const legendScale = isMobile ? 0.5 : 1;
- const legendX = isMobile ? 15 : 40;
- const legendY = height - (isMobile ? 100 : 200);
- const legendSpacing = isMobile ? 22 : 45;
- const lineLength = isMobile ? 30 : 60;
- const textOffset = isMobile ? 35 : 70;
- const fontSize = isMobile ? 11 : 22;
- const strokeWidth = isMobile ? 3 : 6;
- const textStrokeWidth = isMobile ? 1.5 : 3;
+ const isMobile = window.innerWidth < 768;
+ const legendSpacing = isMobile ? 25 : 40;
+ const lineLength = isMobile ? 25 : 50;
+ const textOffset = isMobile ? 30 : 60;
+ const fontSize = isMobile ? 12 : 16;
+ const strokeWidth = isMobile ? 3 : 5;
 
- const legend = svg.append("g")
-   .attr("class", "legend")
-   .attr("transform", `translate(${legendX},${legendY})`);
+ // Set SVG size
+ const svgHeight = legendData.length * legendSpacing + 10;
+ legendSvg.attr("width", isMobile ? 150 : 200).attr("height", svgHeight);
+
+ const legend = legendSvg.append("g")
+   .attr("transform", "translate(10, 15)");
 
  legend.selectAll("line")
    .data(legendData)
@@ -260,29 +263,42 @@ function drawGraphWithNodesAndEdges(data: GraphData) {
    .data(legendData)
    .join("text")
    .attr("x", textOffset)
-   .attr("y", (_: any, i: number) => i * legendSpacing + (fontSize / 3))
+   .attr("y", (_: any, i: number) => i * legendSpacing + 5)
    .attr("font-size", `${fontSize}px`)
    .attr("font-weight", "bold")
    .attr("fill", "white")
-   .attr("stroke", "#000")
-   .attr("stroke-width", textStrokeWidth)
-   .attr("paint-order", "stroke")
-   .text((d: any) => d.type.charAt(0).toUpperCase() + d.type.slice(1));
+   .attr("pointer-events", "none")
+   .text((d: any) => d.type);
+}
+
+// Setup legend collapse functionality
+function setupLegendCollapse() {
+ const legendWindow = document.getElementById("legend-window");
+ const legendHeader = document.getElementById("legend-header");
+ 
+ if (legendHeader && legendWindow) {
+   legendHeader.addEventListener("click", () => {
+     legendWindow.classList.toggle("collapsed");
+   });
+ }
 }
 
 // Load graph data and initialize
 document.addEventListener("DOMContentLoaded", async () => {
- try {
-   const response = await fetch("graph-data.json");
-   const data: GraphData = await response.json();
-   
-   drawGraphWithNodesAndEdges(data);
-   
-   // Redraw on window resize
-   window.addEventListener("resize", () => {
-     drawGraphWithNodesAndEdges(data);
-   });
- } catch (error) {
-   console.error("Error loading graph data:", error);
- }
+  try {
+    const response = await fetch("graph-data.json");
+    const data: GraphData = await response.json();
+    
+    drawGraphWithNodesAndEdges(data);
+    drawLegend();
+    setupLegendCollapse();
+    
+    // Redraw on window resize
+    window.addEventListener("resize", () => {
+      drawGraphWithNodesAndEdges(data);
+      drawLegend();
+    });
+  } catch (error) {
+    console.error("Error loading graph data:", error);
+  }
 });
